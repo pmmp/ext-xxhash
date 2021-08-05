@@ -1,0 +1,7 @@
+ARG_ENABLE('xxhash', 'xxhash support', 'no');
+
+if (PHP_XXHASH != 'no') {
+	AC_DEFINE('HAVE_XXHASH', 1, 'xxhash support enabled');
+
+	EXTENSION('xxhash', 'xxhash.c', null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
+}
