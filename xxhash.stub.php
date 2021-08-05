@@ -2,6 +2,6 @@
 
 /** @generate-function-entries */
 
-function test1(): void {}
+function xxhash32(string $data) : string{}
 
-function test2(string $str = ""): string {}
+function xxhash64(string $data) : string{}
