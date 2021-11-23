@@ -43,6 +43,10 @@ PHP_MINFO_FUNCTION(xxhash)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "xxhash support", "enabled");
+
+	char xxhash_library_version[16];
+	snprintf(xxhash_library_version, sizeof(xxhash_library_version), "%d.%d.%d", XXH_VERSION_MAJOR, XXH_VERSION_MINOR, XXH_VERSION_RELEASE);
+	php_info_print_table_row(2, "xxhash library version", xxhash_library_version);
 	php_info_print_table_end();
 }
 
