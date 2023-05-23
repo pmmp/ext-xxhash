@@ -11,33 +11,29 @@
 
 #include "xxhash.h"
 
-PHP_FUNCTION(xxhash32) {
-	zend_string *input;
+#define ACCEPT_STRING_INPUT() \
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_STR(input)
-	ZEND_PARSE_PARAMETERS_END();
 
-	XXH32_hash_t hash = XXH32(ZSTR_VAL(input), ZSTR_LEN(input), 0);
-	XXH32_canonical_t canonicalHash;
-	XXH32_canonicalFromHash(&canonicalHash, hash);
-
-	RETURN_STRINGL((const char *) &canonicalHash.digest, sizeof(canonicalHash.digest));
+#define STRING_HASH_FUNC(name, hashFunc, result_size) \
+PHP_FUNCTION(name) { \
+	zend_string *input; \
+	\
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1) \
+		Z_PARAM_STR(input) \
+	ZEND_PARSE_PARAMETERS_END(); \
+	\
+	XXH##result_size##_hash_t hash = hashFunc(ZSTR_VAL(input), ZSTR_LEN(input), 0); \
+	XXH##result_size##_canonical_t canonicalHash; \
+	XXH##result_size##_canonicalFromHash(&canonicalHash, hash); \
+	\
+	RETURN_STRINGL((const char *) &canonicalHash.digest, sizeof(canonicalHash.digest)); \
 }
 
-PHP_FUNCTION(xxhash64) {
-	zend_string *input;
+STRING_HASH_FUNC(xxhash32, XXH32, 32);
+STRING_HASH_FUNC(xxhash64, XXH64, 64);
+STRING_HASH_FUNC(xxhash3_64bits, XXH3_64bits_withSeed, 64);
+STRING_HASH_FUNC(xxhash3_128bits, XXH3_128bits_withSeed, 128);
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_STR(input)
-	ZEND_PARSE_PARAMETERS_END();
-
-	XXH64_hash_t hash = XXH64(ZSTR_VAL(input), ZSTR_LEN(input), 0);
-	XXH64_canonical_t canonicalHash;
-	XXH64_canonicalFromHash(&canonicalHash, hash);
-
-	RETURN_STRINGL((const char *) &canonicalHash.digest, sizeof(canonicalHash.digest));
-}
 
 PHP_MINFO_FUNCTION(xxhash)
 {
