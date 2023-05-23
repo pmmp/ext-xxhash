@@ -8,8 +8,13 @@
 #include "ext/standard/info.h"
 #include "php_xxhash.h"
 #include "xxhash_arginfo.h"
+#include "Zend/zend_long.h"
 
 #include "xxhash.h"
+
+#ifndef ZEND_ENABLE_ZVAL_LONG64
+# error "ext-xxhash requires a 64-bit build of PHP"
+#endif
 
 #define ACCEPT_STRING_INPUT() \
 
@@ -34,6 +39,20 @@ STRING_HASH_FUNC(xxhash64, XXH64, 64);
 STRING_HASH_FUNC(xxhash3_64bits, XXH3_64bits_withSeed, 64);
 STRING_HASH_FUNC(xxhash3_128bits, XXH3_128bits_withSeed, 128);
 
+#define INT_HASH_FUNC(name, hashFunc) \
+PHP_FUNCTION(name) { \
+	zend_long input; \
+	\
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1) \
+		Z_PARAM_LONG(input) \
+	ZEND_PARSE_PARAMETERS_END(); \
+	\
+	RETURN_LONG(hashFunc(&input, sizeof(input), 0)); \
+}
+
+INT_HASH_FUNC(xxhash32_int, XXH32);
+INT_HASH_FUNC(xxhash64_int, XXH64);
+INT_HASH_FUNC(xxhash3_64bits_int, XXH3_64bits_withSeed);
 
 PHP_MINFO_FUNCTION(xxhash)
 {
