@@ -6,7 +6,7 @@
 extern zend_module_entry xxhash_module_entry;
 # define phpext_xxhash_ptr &xxhash_module_entry
 
-# define PHP_XXHASH_VERSION "0.1.1"
+# define PHP_XXHASH_VERSION "0.2.0"
 
 # if defined(ZTS) && defined(COMPILE_DL_XXHASH)
 ZEND_TSRMLS_CACHE_EXTERN()
